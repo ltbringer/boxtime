@@ -35,16 +35,33 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
         {"#fff5f1": 0, "#fee4b1": 4, "green": 8, "#fe8888": 10, "#fe4848": 15}
     )
 
-    plt.figure(figsize=(20, 10))
-    heatmap(
+    days_of_week = {
+        0: "Monday",
+        1: "Tuesday",
+        2: "Wednesday",
+        3: "Thursday",
+        4: "Friday",
+        5: "Saturday",
+        6: "Sunday",
+    }
+
+    plt.figure(figsize=(20, 15), dpi=300)
+    ax = heatmap(
         data,
         square=True,
         annot=True,
         fmt=".0f",
+        cbar=False,
         cbar_kws={"shrink": 0.4},
         vmax=15,
+        linewidths=0.2,
+        linecolor="#ffffff",
         cmap=cmap,
+        yticklabels=days_of_week.values(),
     )
+
+    ax.set_xlabel("# Week", fontsize=14)
+    ax.set_ylabel("Days", fontsize=14)
 
     if save_key:
         par = Path("assets", save_key)

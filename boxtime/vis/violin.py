@@ -1,13 +1,14 @@
 from typing import Dict, List
-from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from seaborn import violinplot, color_palette
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 from boxtime.client.calendar import Event
 from boxtime.vis.aggregate import agg_by, AggField
-from boxtime.vis.colors import color_map, Color, dark_colors
+from boxtime.vis.colors import color_map, Color
 
 
 def plot_violin(
@@ -33,19 +34,34 @@ def plot_violin(
         color_map[reverse_tags.get(col, Color.UNASSIGNED)] for col in df.columns
     ]
     colors = color_palette(hex_colors)
+    columns = {col: col.title() for col in df.columns}
+    df.rename(columns=columns, inplace=True)
 
     # Create the violin plot
-    plt.figure(figsize=(20, 12))
-    plt.gca().set_facecolor("#ede6ce")
+    plt.figure(figsize=(20, 8), dpi=300)
 
-    ax = violinplot(data=df, inner="quart", palette=colors, legend=True)
+    ax = violinplot(
+        data=df,
+        inner="quart",
+        palette=colors,
+        legend=False,
+        cut=0,
+        fill=False,
+        linewidth=1,
+    )
 
     # Add gridlines
-    ax.yaxis.grid(True, linestyle="--", alpha=0.6)
+    max_value = df.max().max()
+    y_ticks = np.arange(0, max_value + 1, 1)  # Adjust max_value to your desired maximum
+    plt.gca().set_yticks(y_ticks, minor=True)
+
+    # Add the gridlines for the minor ticks
+    plt.grid(True, linestyle=":", alpha=0.3, color="#666666", which="minor")
+    ax.yaxis.grid(True, linestyle="--", alpha=0.6, color="#333333", which="both")
 
     # Customize labels and title
     ax.set_xlabel("Categories", fontsize=14)
-    ax.set_ylabel("Values", fontsize=14)
+    ax.set_ylabel("Hours", fontsize=14)
     ax.set_title("Time distribution", fontsize=16)
 
     for i, col in enumerate(df.columns):
@@ -56,7 +72,6 @@ def plot_violin(
         print_median = True
 
         for j, mode in enumerate(modes.index):
-            plot_color = reverse_tags.get(col, Color.UNASSIGNED)
             ax.text(
                 i,
                 mode,
@@ -64,8 +79,6 @@ def plot_violin(
                 ha="center",
                 va="bottom",
                 fontsize=10,
-                # color="white" if plot_color in dark_colors else "black",
-                # weight="bold" if plot_color in dark_colors else "normal",
             )
             if print_median and abs(quantiles[median] - mode) < 0.2:
                 print_median = False
@@ -78,13 +91,23 @@ def plot_violin(
                 ha="center",
                 va="bottom",
                 fontsize=10,
-                # color="white" if plot_color in dark_colors else "black",
-                # weight="bold" if plot_color in dark_colors else "normal",
             )
 
-    # Customize legend
-    # handles, labels = ax.get_legend_handles_labels()
-    # ax.legend(handles, labels, title="Categories", title_fontsize=12, loc="upper right")
+    custom_legend = [
+        Line2D(
+            [0],
+            [0],
+            color="#ffffff",
+            lw=1,
+            label="M1 - Mode 1 or most common observation.",
+        ),
+        Line2D([0], [0], color="#ffffff", lw=1, label="M2 - Mode 2"),
+        Line2D([0], [0], color="#ffffff", lw=1, label="M3 - Mode 3"),
+        Line2D([0], [0], color="#ffffff", lw=1, label="Med - Median"),
+    ]
+
+    # Add the legend to the plot
+    plt.legend(handles=custom_legend, title="Legend", loc="upper left")
 
     # Save the plot if a save_key is provided
     # if save_key:

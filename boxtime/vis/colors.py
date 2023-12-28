@@ -29,7 +29,7 @@ color_map = {
     Color.BLUEBERRY: "#3f51b5",
     Color.BASIL: "#0b8043",
     Color.TOMATO: "#d60000",
-    Color.UNASSIGNED: "#e3e3e3",
+    Color.UNASSIGNED: "#000000",
 }
 
 dark_colors = [Color.GRAPE, Color.BASIL, Color.BLUEBERRY]
