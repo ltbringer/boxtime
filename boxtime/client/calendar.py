@@ -49,11 +49,12 @@ class Event(BaseModel):
     url: str = Field(alias="htmlLink", repr=False)
 
     @property
-    def duration(self) -> int:
+    def duration(self) -> float:
         """
         Duration of the event in seconds
         """
-        return (self.end.dt - self.start.dt).total_seconds()
+        seconds_in_an_hour = 3600.0
+        return (self.end.dt - self.start.dt).total_seconds() / seconds_in_an_hour
 
 
 class EventService:
@@ -94,7 +95,7 @@ class EventService:
         return [Event(**event) for event in event_objects["items"]]
 
 
-def key_by(time_period: TimePeriod, dt: datetime) -> str:
+def key_by(time_period: TimePeriod, dt: datetime) -> int:
     """
     Get the key to group events by
 
@@ -110,7 +111,7 @@ def key_by(time_period: TimePeriod, dt: datetime) -> str:
         TimePeriod.MONTH: dt.month - 1,
         TimePeriod.DAY_OF_WEEK: dt.isoweekday() - 1,
     }
-    return str(key_fn[time_period])
+    return key_fn[time_period]
 
 
 GroupedEvents = Dict[str, List[Event] | Dict[str, List[Event]]]
