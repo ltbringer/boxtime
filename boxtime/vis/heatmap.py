@@ -1,5 +1,4 @@
 from typing import List
-from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
@@ -7,21 +6,8 @@ from seaborn import heatmap
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from boxtime.client.calendar import Event, group_by, GroupedEvents, TimePeriod
-
-
-def agg_by_duration(events: List[Event]) -> dict[str, float]:
-    grouped_events: GroupedEvents = group_by(
-        group_by(events, TimePeriod.DAY_OF_WEEK), TimePeriod.WEEK
-    )
-    events_agg_by_duration = defaultdict(lambda: defaultdict(float))
-    for day, grouped_ in grouped_events.items():
-        for week, events in grouped_.items():
-            duration = 0
-            for event in events:
-                duration += event.duration
-            events_agg_by_duration[day][week] = duration
-    return events_agg_by_duration
+from boxtime.client.calendar import Event
+from boxtime.vis.aggregate import agg_by, AggField
 
 
 def make_cmap(cmap: dict[str, int]) -> LinearSegmentedColormap:
@@ -39,14 +25,14 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
     n_rows = 7
     n_cols = 52
     data = np.zeros((n_rows, n_cols))
-    events_agg_by_duration = agg_by_duration(events)
+    events_agg_by_duration = agg_by(events, AggField.DAY_OF_WEEK, AggField.WEEK)
 
     for day, grouped_ in events_agg_by_duration.items():
         for week, duration in grouped_.items():
             data[day][week] = duration
 
     cmap = make_cmap(
-        {"#fff5f1": 0, "#fee4b1": 4, "green": 8, "#f97397": 10, "#fe4848": 15}
+        {"#fff5f1": 0, "#fee4b1": 4, "green": 8, "#fe8888": 10, "#fe4848": 15}
     )
 
     plt.figure(figsize=(20, 10))
@@ -61,7 +47,9 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
     )
 
     if save_key:
-        path = Path("assets", save_key, "heatmap.png").mkdir(
-            parents=True, exist_ok=True
-        )
+        par = Path("assets", save_key)
+        par.mkdir(parents=True, exist_ok=True)
+        path = par / "heatmap.png"
+        if path.exists():
+            return
         plt.savefig(path)
