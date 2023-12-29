@@ -1,5 +1,4 @@
 from typing import List
-from pathlib import Path
 
 import numpy as np
 from seaborn import heatmap
@@ -8,6 +7,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 from boxtime.client.calendar import Event
 from boxtime.vis.aggregate import agg_by, AggField
+from boxtime.vis.utils import save_plot
 
 
 def make_cmap(cmap: dict[str, int]) -> LinearSegmentedColormap:
@@ -45,7 +45,7 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
         6: "Sunday",
     }
 
-    plt.figure(figsize=(20, 15), dpi=300)
+    plt.figure(figsize=(20, 5), dpi=300)
     ax = heatmap(
         data,
         square=True,
@@ -59,14 +59,12 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
         cmap=cmap,
         yticklabels=days_of_week.values(),
     )
-
+    ax.set_title(
+        "Quality of time spent.",
+        fontsize=16,
+    )
     ax.set_xlabel("Weeks", fontsize=14)
     ax.set_ylabel("Days", fontsize=14)
 
     if save_key:
-        par = Path("assets", save_key)
-        par.mkdir(parents=True, exist_ok=True)
-        path = par / "heatmap.png"
-        if path.exists():
-            return
-        plt.savefig(path)
+        save_plot(save_key, "heatmap.png")
