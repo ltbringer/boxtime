@@ -55,7 +55,8 @@ This chart delves deeper into the time spent, to highlight attempts at juggling 
 
 #### Spread
 
-![Radar chart shows tunnel vision](./resources/charts/radar.png)
+<img src='./resources/charts/radar.png' width='500'>
+
 This chart helps making comparison with others operating at the target role. This could vary by person and industry, but the area and shape can help you identify if efforts are at least in the right direction.
 
 ### Qualitative
