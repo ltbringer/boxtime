@@ -9,6 +9,7 @@ from matplotlib.lines import Line2D
 from boxtime.client.calendar import Event
 from boxtime.vis.aggregate import agg_by, AggField
 from boxtime.vis.colors import color_map, Color
+from boxtime.vis.utils import save_plot
 
 
 def plot_violin(
@@ -38,7 +39,7 @@ def plot_violin(
     df.rename(columns=columns, inplace=True)
 
     # Create the violin plot
-    plt.figure(figsize=(20, 8), dpi=300)
+    plt.figure(figsize=(20, 12), dpi=300)
 
     ax = violinplot(
         data=df,
@@ -51,18 +52,15 @@ def plot_violin(
     )
 
     # Add gridlines
-    max_value = df.max().max()
-    y_ticks = np.arange(0, max_value + 1, 1)  # Adjust max_value to your desired maximum
-    plt.gca().set_yticks(y_ticks, minor=True)
-
-    # Add the gridlines for the minor ticks
-    plt.grid(True, linestyle="-.", alpha=0.3, color="#666666", which="minor")
     ax.yaxis.grid(True, linestyle="--", alpha=0.6, color="#333333", which="major")
 
     # Customize labels and title
     ax.set_xlabel("Categories", fontsize=14)
     ax.set_ylabel("Hours", fontsize=14)
-    ax.set_title("Time distribution", fontsize=16)
+    ax.set_title(
+        "Different modes of task priority.",
+        fontsize=16,
+    )
 
     for i, col in enumerate(df.columns):
         x = i
@@ -107,10 +105,7 @@ def plot_violin(
     ]
 
     # Add the legend to the plot
-    plt.legend(handles=custom_legend, title="Legend", loc="upper left")
+    plt.legend(handles=custom_legend, title="Legend", loc="upper right")
 
-    # Save the plot if a save_key is provided
-    # if save_key:
-    #     plt.savefig(f"{save_key}.png", bbox_inches="tight")
-
-    plt.show()
+    if save_key:
+        save_plot(save_key, "violin.png")
