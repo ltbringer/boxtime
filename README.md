@@ -38,7 +38,9 @@ You need:
 
 ## Demo
 
-### Quality Time
+### Quantitative
+
+#### Quality Time
 
 ![Heatmap showing time spent](./resources/charts/heatmap.png)
 This chart penalizes working longer hours as much as staggeringly less. However, this is a judgement based on quantity and misses importance of themes like:
@@ -46,12 +48,20 @@ This chart penalizes working longer hours as much as staggeringly less. However,
 - _Great work done efficiently_.
 - _Time taken to resolve major outages._
 
-### Category Prioritization
+#### Category Prioritization
 
 ![Violin plot showing distribution of time](./resources/charts/violin.png)
 This chart delves deeper into the time spent, to highlight attempts at juggling various types of work. This chart values consistency and makes one-off moments clearer.
 
-### Spread
+#### Spread
 
 ![Radar chart shows tunnel vision](./resources/charts/radar.png)
 This chart helps making comparison with others operating at the target role. This could vary by person and industry, but the area and shape can help you identify if efforts are at least in the right direction.
+
+### Qualitative
+
+The above charts aren't are sure sign of progress but they help you with direction. If business impact is your strongest index, well...? folks should be excited?
+**or** the way impact is measured, delivered, defined, etc might be misunderstood. Either way, the chart's job is to provoke thoughts.
+
+There are more blind spots that are unaddressed by a time boxed calendar. The calendar shows what you are working on, what you have noticed. It can't talk about the things
+you are missing or avoiding. To help you with that, we will share a simple contract around an emotion journal.
