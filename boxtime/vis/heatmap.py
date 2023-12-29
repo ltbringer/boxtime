@@ -54,13 +54,13 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
         cbar=False,
         cbar_kws={"shrink": 0.4},
         vmax=15,
-        linewidths=0.2,
+        linewidths=1,
         linecolor="#ffffff",
         cmap=cmap,
         yticklabels=days_of_week.values(),
     )
 
-    ax.set_xlabel("# Week", fontsize=14)
+    ax.set_xlabel("Weeks", fontsize=14)
     ax.set_ylabel("Days", fontsize=14)
 
     if save_key:

@@ -56,8 +56,8 @@ def plot_violin(
     plt.gca().set_yticks(y_ticks, minor=True)
 
     # Add the gridlines for the minor ticks
-    plt.grid(True, linestyle=":", alpha=0.3, color="#666666", which="minor")
-    ax.yaxis.grid(True, linestyle="--", alpha=0.6, color="#333333", which="both")
+    plt.grid(True, linestyle="-.", alpha=0.3, color="#666666", which="minor")
+    ax.yaxis.grid(True, linestyle="--", alpha=0.6, color="#333333", which="major")
 
     # Customize labels and title
     ax.set_xlabel("Categories", fontsize=14)
