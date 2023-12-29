@@ -42,6 +42,7 @@ class Event(BaseModel):
     end: Time = Field(repr=False)
     url: str = Field(alias="htmlLink", repr=False)
     tags: ClassVar[Dict[str, str]] = {}
+    attendees: List[CalendarUser] = Field(default_factory=list, repr=False)
 
     @classmethod
     def set_tags(cls, tags: Dict[str, str]):
@@ -113,8 +114,8 @@ class EventService:
                 .execute()
             )
 
-        with open(path, "w") as f:
-            json.dump(event_objects["items"], f)
+            with open(path, "w") as f:
+                json.dump(event_objects["items"], f)
 
         Event.set_tags({k.value: v for k, v in tags.items()})
         return [Event(**event) for event in event_objects["items"]]
