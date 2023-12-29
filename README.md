@@ -21,8 +21,8 @@ You need:
     conda create -n timebox python=3.10 # 3.10 or higher works
     ```
 
-2. Python 3.10 and above.
-3. git clone this project.
+2. Python 3.10 or above.
+3. `git`: To clone this project.
 4. jupyter notebook or vscode jupyter extension.
 5. A google cloud account.
 
