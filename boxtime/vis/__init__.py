@@ -6,4 +6,7 @@ home = str(Path.home())
 
 fp = font_manager.FontProperties(fname=Path.home() / ".fonts/Roboto-Light.ttf")
 font_manager.findfont(fp)
-plt.rcParams["font.family"] = fp.get_name()
+custom_font = fp.get_name()
+
+if custom_font == "Roboto":
+    plt.rcParams["font.family"] = custom_font
