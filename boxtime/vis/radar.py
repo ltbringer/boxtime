@@ -3,8 +3,8 @@ from typing import Dict, List
 import numpy as np
 import matplotlib.pyplot as plt
 
-from boxtime.client.calendar import Event
-from boxtime.vis.aggregate import group_by, AggField
+from boxtime.vendor.calendar import Event
+from boxtime.vis.aggregate import group_by, AggregateBy
 from boxtime.vis.colors import Color
 from boxtime.vis.utils import save_plot
 
@@ -16,7 +16,7 @@ def plot_radar(
 ):
     events_agg_by_duration_tags = group_by(
         events,
-        AggField.TAG,
+        AggregateBy.TAG,
     )
     reverese_tags = {v: k for k, v in tags.items()}
     data = {}

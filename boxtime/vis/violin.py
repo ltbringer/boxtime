@@ -6,8 +6,8 @@ from seaborn import violinplot, color_palette
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
-from boxtime.client.calendar import Event
-from boxtime.vis.aggregate import agg_by, AggField
+from boxtime.vendor.calendar import Event
+from boxtime.vis.aggregate import agg_by, AggregateBy
 from boxtime.vis.colors import color_map, Color
 from boxtime.vis.utils import save_plot
 
@@ -15,7 +15,7 @@ from boxtime.vis.utils import save_plot
 def plot_violin(
     events: List[Event],
     tags: Dict[Color, str],
-    period: AggField,
+    period: AggregateBy,
     save_key: str | None = None,
 ):
     """
@@ -23,7 +23,7 @@ def plot_violin(
     """
     events_agg_by_duration_tags = agg_by(
         events,
-        AggField.TAG,
+        AggregateBy.TAG,
         period,
     )
     df = pd.DataFrame.from_dict(events_agg_by_duration_tags)

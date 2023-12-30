@@ -2,10 +2,10 @@ from typing import List, Dict
 from collections import defaultdict
 from enum import Enum
 
-from boxtime.client.calendar import Event
+from boxtime.vendor.calendar import Event
 
 
-class AggField(Enum):
+class AggregateBy(Enum):
     DAY = "day"
     DAY_OF_WEEK = "day_of_week"
     WEEK = "week"
@@ -13,7 +13,7 @@ class AggField(Enum):
     TAG = "tag"
 
 
-def key_by(event: Event, field: AggField) -> int:
+def key_by(event: Event, field: AggregateBy) -> int:
     """
     Get the key to group events by
 
@@ -25,11 +25,11 @@ def key_by(event: Event, field: AggField) -> int:
     """
     dt = event.start.dt
     keys = {
-        AggField.DAY: dt.day - 1,
-        AggField.WEEK: dt.isocalendar().week - 1,
-        AggField.MONTH: dt.month - 1,
-        AggField.DAY_OF_WEEK: dt.isoweekday() - 1,
-        AggField.TAG: event.tag,
+        AggregateBy.DAY: dt.day - 1,
+        AggregateBy.WEEK: dt.isocalendar().week - 1,
+        AggregateBy.MONTH: dt.month - 1,
+        AggregateBy.DAY_OF_WEEK: dt.isoweekday() - 1,
+        AggregateBy.TAG: event.tag,
     }
     return keys[field]
 
@@ -39,7 +39,7 @@ GroupedEvents = Dict[str | int, List[Event] | Dict[str | int, List[Event]]]
 
 def group_by(
     events: List[Event] | Dict[int | str, List[Event]],
-    field: AggField = AggField.DAY,
+    field: AggregateBy = AggregateBy.DAY,
 ) -> GroupedEvents:
     """
     Group events by day
@@ -61,7 +61,7 @@ def group_by(
     return events
 
 
-def agg_by(events: List[Event], *fields: AggField) -> Dict[str, Dict[int, float]]:
+def agg_by(events: List[Event], *fields: AggregateBy) -> Dict[str, Dict[int, float]]:
     inner, outer = fields
     grouped_events: GroupedEvents = group_by(group_by(events, inner), outer)
     events_agg_by_duration = defaultdict(lambda: defaultdict(float))

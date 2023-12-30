@@ -5,8 +5,8 @@ from seaborn import heatmap
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
-from boxtime.client.calendar import Event
-from boxtime.vis.aggregate import agg_by, AggField
+from boxtime.vendor.calendar import Event
+from boxtime.vis.aggregate import agg_by, AggregateBy
 from boxtime.vis.utils import save_plot
 
 
@@ -25,7 +25,7 @@ def plot_heatmap(events: List[Event], save_key: str | None = None):
     n_rows = 7
     n_cols = 52
     data = np.zeros((n_rows, n_cols))
-    events_agg_by_duration = agg_by(events, AggField.DAY_OF_WEEK, AggField.WEEK)
+    events_agg_by_duration = agg_by(events, AggregateBy.DAY_OF_WEEK, AggregateBy.WEEK)
 
     for day, grouped_ in events_agg_by_duration.items():
         for week, duration in grouped_.items():
