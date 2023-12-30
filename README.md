@@ -26,11 +26,14 @@ You need:
 4. jupyter notebook or vscode jupyter extension.
 5. A google cloud account.
 
+    <details>
+    <summary>Getting GCP credentials</summary>
     You'd need to request credentials from google cloud to access the calendar API.
     [This guide](https://developers.google.com/calendar/api/quickstart/python) outlines the steps needed to acquire the credentials. 
 
     ![Google credentials page](./resources/image.png)
     Once you hit create, you will be able to download the credentials. The file is originally named as `client_secret_(\d+)-[a-z0-9]+.apps.googleusercontent.com.json`
+    </details>
 
 6. Create a `credentials` dir at the root and save the credential as `google.credentials.json`.
 7. Launch the sketch.ipynb.
