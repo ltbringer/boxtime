@@ -40,24 +40,31 @@ You need:
 
 ### Quantitative
 
-#### Quality Time
+<details>
+<summary>Quality of time spent over a year</summary>
 
 ![Heatmap showing time spent](./resources/charts/heatmap.png)
 This chart penalizes working longer hours as much as staggeringly less. However, this is a judgement based on quantity and misses importance of themes like:
 
 - _Great work done efficiently_.
 - _Time taken to resolve major outages._
+</details>
 
-#### Category Prioritization
+<details>
+<summary>Distribution of time over different task categories</summary>
 
 ![Violin plot showing distribution of time](./resources/charts/violin.png)
 This chart delves deeper into the time spent, to highlight attempts at juggling various types of work. This chart values consistency and makes one-off moments clearer.
+</details>
 
-#### Spread
+<details>
+<summary>Time balancing</summary>
 
 <img src='./resources/charts/radar.png' width='500'>
 
 This chart helps making comparison with others operating at the target role. This could vary by person and industry, but the area and shape can help you identify if efforts are at least in the right direction.
+
+</details>
 
 ### Qualitative
 
