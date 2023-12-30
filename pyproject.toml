@@ -15,6 +15,9 @@ seaborn = "^0.13.0"
 matplotlib = "^3.8.2"
 pydantic = "^2.5.3"
 pandas = "^2.1.4"
+sqlmodel = "^0.0.14"
+loguru = "^0.7.2"
+rich = "^13.7.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -24,3 +27,6 @@ pytest-cov = "^4.1.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+boxtime = "boxtime.cli:main"
