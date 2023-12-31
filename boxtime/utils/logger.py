@@ -1,12 +1,13 @@
-import sys
 from loguru import logger
 
 config = {
     "handlers": [
         {
+            "sink": "debug.log",
+            "serialize": True,
+            "level": "DEBUG",
             "format": "{time}|{name}:{line}|{function}| {message}",
         },
-        {"sink": "debug.log", "serialize": True},
     ],
 }
 
