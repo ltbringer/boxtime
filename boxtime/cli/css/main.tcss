@@ -2,4 +2,9 @@ Screen {
     layout: grid;
     grid-size: 3 1;
     grid-columns: 1fr 2fr 1fr;
+    grid-gutter: 1;
+}
+
+#task_list {
+    margin-top: 1;
 }
