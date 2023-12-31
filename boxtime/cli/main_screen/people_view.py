@@ -14,7 +14,7 @@ from boxtime.db.schema import People
 
 
 class PeopleScreen(ModalScreen[Optional[People]]):
-    CSS_PATH = "./../css/task_screen.tcss"
+    CSS_PATH = "./../css/people_screen.tcss"
 
     class Insert(Message):
         def __init__(self) -> None:
@@ -29,7 +29,7 @@ class PeopleScreen(ModalScreen[Optional[People]]):
                 yield Input(valid_empty=False, id="team")
                 yield Label("Role:")
                 yield Input(valid_empty=False, id="role")
-                yield Button("Submit", variant="primary", classes="button")
+                yield Button("Submit", id="submit", variant="primary", classes="button")
                 yield Button("Back", id="quit", classes="button")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
