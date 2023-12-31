@@ -11,10 +11,10 @@ from textual.widgets import (
     Static,
 )
 
-from boxtime.db.schema import People, TaskType
+from boxtime.db.schema import People, TaskType, EmotionLog
 from boxtime.cli.art import LOGO
-from boxtime.cli.main_screen.people_view import PeopleScreen
-from boxtime.cli.main_screen.task_view import TaskScreen
+from boxtime.cli.screens.input.people import PeopleScreen
+from boxtime.cli.screens.input.task import TaskScreen
 
 
 class BoxTime(App):
@@ -71,3 +71,9 @@ class BoxTime(App):
                 task_list.add_row(*[task.id, task.name, task.skill, task.experience])
 
         self.push_screen(TaskScreen(), check_task)
+
+    def action_add_log(self) -> None:
+        def check_log(log: Optional[EmotionLog]) -> None:
+            pass
+
+        pass

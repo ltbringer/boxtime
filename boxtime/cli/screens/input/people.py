@@ -14,7 +14,7 @@ from boxtime.db.schema import People
 
 
 class PeopleScreen(ModalScreen[Optional[People]]):
-    CSS_PATH = "./../css/people_screen.tcss"
+    CSS_PATH = "./../../css/people_screen.tcss"
 
     class Insert(Message):
         def __init__(self) -> None:

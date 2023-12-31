@@ -1,4 +1,4 @@
-from boxtime.cli.main_screen.box_time import BoxTime
+from boxtime.cli.screens.main import BoxTime
 from boxtime.db.schema import People, TaskType, EmotionLog
 
 

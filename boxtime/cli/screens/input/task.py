@@ -12,7 +12,7 @@ from boxtime.utils.logger import logger
 
 
 class TaskScreen(ModalScreen[Optional[TaskType]]):
-    CSS_PATH = "./../css/task_screen.tcss"
+    CSS_PATH = "./../../css/task_screen.tcss"
 
     class Insert(Message):
         def __init__(self) -> None:
