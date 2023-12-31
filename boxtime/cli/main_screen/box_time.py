@@ -11,9 +11,10 @@ from textual.widgets import (
     Static,
 )
 
-from boxtime.db.schema import People
+from boxtime.db.schema import People, TaskType
 from boxtime.cli.art import LOGO
 from boxtime.cli.main_screen.people_view import PeopleScreen
+from boxtime.cli.main_screen.task_view import TaskScreen
 
 
 class BoxTime(App):
@@ -30,23 +31,43 @@ class BoxTime(App):
     rows: List[People] = reactive([], layout=True)
 
     def compose(self) -> ComposeResult:
+        yield Header()
         with Container(classes="main"):
             with Vertical():
-                yield Header()
                 yield Static(LOGO)
-                yield DataTable(id="data_table")
-                yield Footer()
+                yield DataTable(id="people_list")
+                yield DataTable(id="task_list")
+        yield Footer()
 
     def on_mount(self) -> None:
-        table: DataTable = self.query_one("DataTable")
-        table.add_columns("Username", "Team", "Role")
+        people_list: DataTable = self.query_one("#people_list")
+        people_list.add_columns("ID", "Username", "Team", "Role")
+
+        task_list: DataTable = self.query_one("#task_list")
+        task_list.add_columns("ID", "Task", "Skill", "Experience")
+
         for person in People.search():
-            table.add_row(*[person.username, person.team, person.role])
+            people_list.add_row(*[person.id, person.username, person.team, person.role])
+
+        for task in TaskType.search():
+            task_list.add_row(*[task.id, task.name, task.skill, task.experience])
 
     def action_add_people(self) -> None:
         def check_people(person: Optional[People]) -> None:
-            table = self.query_one("DataTable")
+            people_list = self.query_one("#people_list")
+
             if person:
-                table.add_row(*[person.username, person.team, person.role])
+                people_list.add_row(
+                    *[person.id, person.username, person.team, person.role]
+                )
 
         self.push_screen(PeopleScreen(), check_people)
+
+    def action_add_task(self) -> None:
+        def check_task(task: Optional[TaskType]) -> None:
+            task_list = self.query_one("#task_list")
+
+            if task:
+                task_list.add_row(*[task.id, task.name, task.skill, task.experience])
+
+        self.push_screen(TaskScreen(), check_task)
