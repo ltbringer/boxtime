@@ -1,7 +1,7 @@
 import sqlite3
 import abc
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pathlib import Path
 from datetime import datetime
 
@@ -44,6 +44,8 @@ class Feeling(Enum):
 class Skill(Enum):
     SOFT = 0
     HARD = 1
+    BOTH = 2
+    NONE = 3
 
 
 class Table(BaseModel, abc.ABC):
@@ -97,10 +99,14 @@ class People(Table):
         self.id = None
 
     @classmethod
-    def search(cls, username: str | None = None) -> List["People"]:
+    def search(
+        cls, username: str | None = None, id: int | None = None
+    ) -> List["People"]:
         with SQLConnect() as cursor:
             if username:
                 cursor.execute("SELECT * FROM people WHERE username = ?", (username,))
+            elif id:
+                cursor.execute("SELECT * FROM people WHERE id = ?", (id,))
             else:
                 cursor.execute("SELECT * FROM people")
             people = cursor.fetchall()
@@ -147,10 +153,12 @@ class TaskType(Table):
         self.id = None
 
     @classmethod
-    def search(cls, name: str | None = None) -> List["TaskType"]:
+    def search(cls, name: str | None = None, id: int | None = None) -> List["TaskType"]:
         with SQLConnect() as cursor:
             if name:
                 cursor.execute("SELECT * FROM task_type WHERE name = ?", (name,))
+            elif id:
+                cursor.execute("SELECT * FROM task_type WHERE id = ?", (id,))
             else:
                 cursor.execute("SELECT * FROM task_type")
             tasks = cursor.fetchall()
@@ -164,8 +172,8 @@ class EmotionLog(Table):
     duration: int
     trigger: str
     reaction: str
-    people_id: List[int]
-    task_id: List[int]
+    people: List[People] = Field(default_factory=list)
+    task: List[TaskType] = Field(default_factory=list)
     resolved: bool = Field(default=False)
 
     @staticmethod
@@ -177,8 +185,8 @@ class EmotionLog(Table):
             duration INTEGER NOT NULL,
             trigger TEXT NOT NULL,
             reaction TEXT NOT NULL,
-            people_id INTEGER,
-            task_id INTEGER,
+            people_id TEXT,
+            task_id TEXT,
             resolved INTEGER NOT NULL DEFAULT 0
         )"""
         with SQLConnect() as cursor:
@@ -195,30 +203,33 @@ class EmotionLog(Table):
         people_id: List[int],
         task_id: List[int],
     ) -> "EmotionLog":
-        log = cls(
-            feeling=feeling,
-            timestamp=timestamp,
-            duration=duration,
-            trigger=trigger,
-            reaction=reaction,
-            people_id=people_id,
-            task_id=task_id,
-        )
         with SQLConnect() as cursor:
             cursor.execute(
                 "INSERT INTO emotion_log (feeling, timestamp, duration, trigger,"
                 " reaction, people_id, task_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 (
-                    log.feeling,
-                    log.timestamp,
-                    log.duration,
-                    log.trigger,
-                    log.reaction,
-                    log.people_id,
-                    log.task_id,
+                    feeling,
+                    timestamp,
+                    duration,
+                    trigger,
+                    reaction,
+                    str(people_id),
+                    str(task_id),
                 ),
             )
-        return log
+            id_ = cursor.lastrowid
+        people = [people for id_ in people_id for people in People.search(id=id_)]
+        task = [task for id_ in task_id for task in TaskType.search(id=id_)]
+        return cls(
+            id=id_,
+            feeling=feeling,
+            timestamp=timestamp,
+            duration=duration,
+            trigger=trigger,
+            reaction=reaction,
+            people=people,
+            task=task,
+        )
 
     def update(
         self,
@@ -256,13 +267,41 @@ class EmotionLog(Table):
         cls,
         id: int | None = None,
         feeling: Feeling | None = None,
-        timestamp: datetime | None = None,
-        people_ids: int | None = None,
+        time_range: Dict[str, datetime] | None = None,
     ) -> List["EmotionLog"]:
         with SQLConnect() as cursor:
             if id:
                 cursor.execute("SELECT * FROM emotion_log WHERE id = ?", (id,))
+            elif feeling:
+                cursor.execute(
+                    "SELECT * FROM emotion_log WHERE feeling = ?", (feeling,)
+                )
+            elif time_range:
+                start = time_range["start"]
+                end = time_range["end"]
+                cursor.execute(
+                    "SELECT * FROM emotion_log WHERE timestamp BETWEEN ? AND ?",
+                    (start, end),
+                )
             else:
                 cursor.execute("SELECT * FROM emotion_log")
-            logs = cursor.fetchall()
-        return [cls(**log) for log in logs]
+            log_data = cursor.fetchall()
+
+        logs = []
+        for log_ in log_data:
+            log = {}
+            log["id"] = log_["id"]
+            log["people"] = [
+                people for id_ in log_["people_id"] for people in People.search(id=id_)
+            ]
+            log["task"] = [
+                task for id_ in log_["task_id"] for task in TaskType.search(id=id_)
+            ]
+            log["timestamp"] = datetime.fromisoformat(log_["timestamp"])
+            log["feeling"] = Feeling(log_["feeling"])
+            log["timestamp"] = datetime.fromisoformat(log_["timestamp"])
+            log["duration"] = log_["duration"]
+            log["trigger"] = log_["trigger"]
+            log["reaction"] = log_["reaction"]
+            logs.append(cls(**log))
+        return logs
