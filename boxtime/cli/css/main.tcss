@@ -1,10 +1,31 @@
-Screen {
-    layout: grid;
-    grid-size: 3 1;
-    grid-columns: 1fr 2fr 1fr;
+Grid.main {
+    grid-size: 5 5;
+    grid-rows: 1fr;
+    grid-columns: 1fr;
     grid-gutter: 1;
 }
 
-#task_list {
-    margin-top: 1;
+DataTable {
+    border: $primary ascii;
+    height: 100%;
+}
+
+DataTable > .datatable--header {
+    text-style: bold;
+    background: $primary 0%;
+    color: $success;
+}
+
+.primary {
+    column-span: 3;
+    row-span: 3;
+}
+
+.secondary {
+    column-span: 3;
+    row-span: 2;
+}
+
+.main Static {
+    height: 100%;
 }

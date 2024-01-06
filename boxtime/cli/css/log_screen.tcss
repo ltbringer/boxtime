@@ -1,0 +1,45 @@
+LogScreen {
+    align: center middle;
+}
+
+.log-screen-modal {
+    width: 50;
+    padding: 0 1;
+    border: $success;
+    height: 40;
+}
+
+.log-screen-modal Container {
+    height: 4;
+    padding: 0 1;
+    margin: 1 0;
+}
+
+.log-screen-modal Container#feeling {
+    height: 8;
+}
+
+.log-screen-modal Container#reaction {
+    height: 6;
+}
+
+.log-screen-modal Container#trigger {
+    height: 6;
+}
+
+.log-screen-modal Container#buttons {
+    height: 6;
+}
+
+
+#feeling-container {
+    row-span: 3;
+}
+
+.half-width {
+    width: 40%;
+}
+
+.log-screen-modal Button {
+    width: 100%;
+}
