@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.containers import Container, Vertical
+from textual.containers import Grid
 from textual.reactive import reactive
 from textual.widgets import (
     Footer,
@@ -15,6 +15,7 @@ from boxtime.db.schema import People, TaskType, EmotionLog
 from boxtime.cli.art import LOGO
 from boxtime.cli.screens.input.people import PeopleScreen
 from boxtime.cli.screens.input.task import TaskScreen
+from boxtime.cli.screens.input.log import LogScreen
 
 
 class BoxTime(App):
@@ -31,12 +32,20 @@ class BoxTime(App):
     rows: List[People] = reactive([], layout=True)
 
     def compose(self) -> ComposeResult:
-        yield Header()
-        with Container(classes="main"):
-            with Vertical():
-                yield Static(LOGO)
-                yield DataTable(id="people_list")
-                yield DataTable(id="task_list")
+        yield Header(name="BoxTime", show_clock=True)
+        with Grid(classes="main"):
+            yield DataTable(id="people_list")
+            yield DataTable(id="emotion_logs", classes="primary")
+            yield Static("")
+            yield DataTable(id="task_list")
+            yield Static("")
+            yield Static("")
+            yield Static("")
+            yield Static("")
+            yield Static("")
+            yield Static("")
+            yield Static("")
+            yield Static("")
         yield Footer()
 
     def on_mount(self) -> None:
@@ -46,11 +55,31 @@ class BoxTime(App):
         task_list: DataTable = self.query_one("#task_list")
         task_list.add_columns("ID", "Task", "Skill", "Experience")
 
+        emotion_logs: DataTable = self.query_one("#emotion_logs")
+        emotion_logs.add_columns(
+            "ID",
+            "Emotion",
+            "Timestamp",
+            "People",
+            "Task",
+        )
+
         for person in People.search():
             people_list.add_row(*[person.id, person.username, person.team, person.role])
 
         for task in TaskType.search():
             task_list.add_row(*[task.id, task.name, task.skill, task.experience])
+
+        for log in EmotionLog.search():
+            emotion_logs.add_row(
+                *[
+                    log.id,
+                    log.feeling,
+                    log.timestamp,
+                    [person.username for person in log.people],
+                    [task.name for task in log.task],
+                ]
+            )
 
     def action_add_people(self) -> None:
         def check_people(person: Optional[People]) -> None:
@@ -74,6 +103,10 @@ class BoxTime(App):
 
     def action_add_log(self) -> None:
         def check_log(log: Optional[EmotionLog]) -> None:
-            pass
+            emotion_logs = self.query_one("#emotion_logs")
+            if log:
+                emotion_logs.add_row(
+                    *[log.id, log.feeling, log.timestamp, log.people, log.task]
+                )
 
-        pass
+        self.push_screen(LogScreen(), check_log)

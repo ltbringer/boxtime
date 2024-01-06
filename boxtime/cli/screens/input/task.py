@@ -4,8 +4,8 @@ from textual.app import ComposeResult
 from textual.containers import Container, VerticalScroll
 from textual.screen import ModalScreen
 from textual.message import Message
-from textual.reactive import reactive
-from textual.widgets import Button, Label, Input, RadioButton, RadioSet
+from textual.widgets import Button, Label, Input, SelectionList
+from textual.widgets.selection_list import Selection
 
 from boxtime.db.schema import TaskType, Skill
 from boxtime.utils.logger import logger
@@ -19,16 +19,17 @@ class TaskScreen(ModalScreen[Optional[TaskType]]):
             super().__init__()
 
     def compose(self) -> ComposeResult:
+        skill_options = []
+        for skill in Skill:
+            skill_options.append(Selection(skill.name.capitalize(), value=skill.value))
+
         with Container(classes="modal"):
             with VerticalScroll(classes="box"):
                 yield Label("Task category name:")
                 yield Input(valid_empty=False, id="task_name")
-                yield Label("Skill:")
+                yield Label("Doing more of this task improves:")
 
-                with RadioSet(id="skill_option"):
-                    yield RadioButton("Soft-skill", value=Skill.SOFT)
-                    yield RadioButton("Hard-skill", value=Skill.HARD)
-
+                yield SelectionList[int](*skill_options, id="skill_option")
                 yield Label("Experience (years):")
                 yield Input(valid_empty=False, id="experience", type="number")
                 yield Button("Submit", id="submit", variant="primary", classes="button")
@@ -37,7 +38,7 @@ class TaskScreen(ModalScreen[Optional[TaskType]]):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "submit":
             name = self.query_one("#task_name").value
-            skill = self.query_one("#skill_option").pressed_button.value
+            skills = self.query_one("#skill_option").selected
             experience = self.query_one("#experience").value
             logger.debug(f"Inserting task: {name}, {skill}, {experience}")
             task = TaskType.insert(name, skill, experience)
